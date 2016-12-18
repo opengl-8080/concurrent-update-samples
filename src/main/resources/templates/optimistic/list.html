@@ -6,6 +6,8 @@
     </head>
     <body>
         <h1>楽観的排他制御</h1>
+        <h3 th:text="${errorMessage}"></h3>
+        <h3 th:text="${message}"></h3>
         
         <form action="/optimistic/memo" method="POST" th:object="${memoForm}">
             <label for="title">タイトル</label>

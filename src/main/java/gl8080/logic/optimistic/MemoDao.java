@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class MemoDao {
@@ -19,9 +20,11 @@ public class MemoDao {
         return this.jdbc.query("select * from memo_for_optimistic order by id asc", new Object[0], rowMapper);
     }
     
-    public Memo find(long id) {
+    public Optional<Memo> find(long id) {
         BeanPropertyRowMapper<Memo> rowMapper = new BeanPropertyRowMapper<>(Memo.class);
-        return this.jdbc.queryForObject("select * from memo_for_optimistic where id=?", rowMapper, id);
+        List<Memo> list = this.jdbc.query("select * from memo_for_optimistic where id=?", new Object[]{id}, rowMapper);
+        
+        return list.isEmpty() ? Optional.empty() : Optional.of(list.get(0));
     }
     
     public void insert(Memo memo) {

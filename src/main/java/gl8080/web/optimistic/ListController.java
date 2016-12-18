@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -30,8 +31,9 @@ public class ListController {
     }
     
     @PostMapping
-    public String register(MemoForm form) {
+    public String register(MemoForm form, RedirectAttributes attributes) {
         this.dao.insert(form.toMemo());
+        attributes.addFlashAttribute("message", "メモを登録しました");
         return "redirect:/optimistic/memo";
     }
 }
