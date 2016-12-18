@@ -2,6 +2,8 @@ package gl8080.web.optimistic;
 
 import gl8080.logic.optimistic.Memo;
 import gl8080.logic.optimistic.MemoDao;
+import gl8080.logic.optimistic.ModifyMemoService;
+import gl8080.logic.optimistic.OptimisticException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +21,8 @@ public class ModifyController {
     
     @Autowired
     private MemoDao dao;
+    @Autowired
+    private ModifyMemoService service;
     
     @GetMapping
     public String init(Model model, @PathVariable("id") long id) {
@@ -33,10 +37,17 @@ public class ModifyController {
     }
     
     @PostMapping
-    public String update(MemoForm form, RedirectAttributes attributes) {
-        this.dao.update(form.toMemo());
-        attributes.addFlashAttribute("message", "メモを更新しました");
+    public String update(Model model, MemoForm form, RedirectAttributes attributes, @PathVariable("id") long id) {
+        Memo memo = form.toMemo();
+        memo.setId(id);
         
-        return "redirect:/optimistic/memo/" + form.getId();
+        try {
+            this.service.modify(memo);
+            attributes.addFlashAttribute("message", "メモを更新しました");
+            return "redirect:/optimistic/memo/" + form.getId();
+        } catch (OptimisticException e) {
+            model.addAttribute("errorMessage", "同時更新されています。検索しなおしてください。");
+            return "optimistic/modify";
+        }
     }
 }
