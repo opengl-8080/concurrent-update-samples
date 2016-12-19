@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <title>悲観的排他制御</title>
+    </head>
+    <body>
+        <h1 th:text="${title}">title</h1>
+        
+        <h3 th:text="${errorMessage}"></h3>
+        <h3 th:text="${message}"></h3>
+        
+        <label>内容</label>
+        <pre th:text="${content}"></pre>
+        
+        <a th:href="@{/pessimistic/memo/{memoId}/edit(memoId=${memoId})}">編集</a>
+    
+        <a th:href="@{/pessimistic/memo}">戻る</a>
+    </body>
+</html>

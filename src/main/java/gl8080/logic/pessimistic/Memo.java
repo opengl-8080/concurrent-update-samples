@@ -1,12 +1,9 @@
-package gl8080.logic.optimistic;
-
-import java.util.Date;
+package gl8080.logic.pessimistic;
 
 public class Memo {
     private Long id;
     private String title;
     private String content;
-    private Date updateDatetime;
 
     public Long getId() {
         return id;
@@ -30,17 +27,5 @@ public class Memo {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public Date getUpdateDatetime() {
-        return updateDatetime;
-    }
-
-    public void setUpdateDatetime(Date updateDatetime) {
-        this.updateDatetime = updateDatetime;
-    }
-
-    public boolean isOlderThan(Memo other) {
-        return this.updateDatetime.before(other.updateDatetime);
     }
 }
