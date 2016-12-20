@@ -2,6 +2,7 @@ package gl8080.web.pessimistic;
 
 import gl8080.logic.pessimistic.Memo;
 import gl8080.logic.pessimistic.MemoDao;
+import gl8080.logic.pessimistic.PessimisticLockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,19 +18,21 @@ public class EditMemoController {
     
     @Autowired
     private MemoDao dao;
+    @Autowired
+    private PessimisticLockService lockService;
     
     @GetMapping
     public String init(Model model, @PathVariable("id") long id) {
         Optional<Memo> memo = this.dao.find(id);
+        
         if (memo.isPresent()) {
-            model.addAttribute(gl8080.web.pessimistic.MemoForm.valueOf(memo.get()));
+            Optional<Long> lockId = this.lockService.tryLock(id);
+            model.addAttribute(MemoForm.valueOf(memo.get(), lockId.get()));
         } else {
             model.addAttribute("errorMessage", "メモが存在しません");
         }
-        
-        
 
-        return "pessimistic/modify";
+        return "pessimistic/edit";
     }
     
 //    @PostMapping

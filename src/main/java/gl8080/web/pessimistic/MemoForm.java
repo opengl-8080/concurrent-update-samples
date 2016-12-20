@@ -9,12 +9,18 @@ public class MemoForm implements Serializable {
     private Long id;
     private String title;
     private String content;
+    private Long lockId;
 
     public static MemoForm valueOf(Memo memo) {
+        return valueOf(memo, null);
+    }
+
+    public static MemoForm valueOf(Memo memo, Long lockId) {
         MemoForm form = new MemoForm();
         form.setId(memo.getId());
         form.setTitle(memo.getTitle());
         form.setContent(memo.getContent());
+        form.setLockId(lockId);
         return form;
     }
 
@@ -50,12 +56,21 @@ public class MemoForm implements Serializable {
         this.id = id;
     }
 
+    public Long getLockId() {
+        return lockId;
+    }
+
+    public void setLockId(Long lockId) {
+        this.lockId = lockId;
+    }
+
     @Override
     public String toString() {
         return "MemoForm{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
+                ", lockId=" + lockId +
                 '}';
     }
 }

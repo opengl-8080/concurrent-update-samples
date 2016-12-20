@@ -1,7 +1,5 @@
 package gl8080.logic.pessimistic;
 
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
@@ -10,7 +8,8 @@ import java.util.Date;
 public class PessimisticLock {
     private static final int EXPIRATION_MINUTE = 3;
     private Long id;
-    private Long memoId;
+    private String code;
+    private Long targetId;
     private Date updateDatetime;
 
     public boolean isOver(LocalDateTime now) {
@@ -27,12 +26,20 @@ public class PessimisticLock {
         this.id = id;
     }
 
-    public Long getMemoId() {
-        return memoId;
+    public String getCode() {
+        return code;
     }
 
-    public void setMemoId(Long memoId) {
-        this.memoId = memoId;
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public Long getTargetId() {
+        return targetId;
+    }
+
+    public void setTargetId(Long targetId) {
+        this.targetId = targetId;
     }
 
     public Date getUpdateDatetime() {
@@ -47,7 +54,8 @@ public class PessimisticLock {
     public String toString() {
         return "PessimisticLock{" +
                 "id=" + id +
-                ", memoId=" + memoId +
+                ", code='" + code + '\'' +
+                ", targetId=" + targetId +
                 ", updateDatetime=" + updateDatetime +
                 '}';
     }
