@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Hello Thymeleaf</title>
+    </head>
+    <body>
+        <form action="login" method="POST" th:object="${loginForm}">
+            <select th:field="*{loginId}">
+                <option value="tom">トム</option>
+                <option value="john">ジョン</option>
+                <option value="mike">マイク</option>
+            </select>
+            <input type="submit" value="ログイン" />
+        </form>
+    </body>
+</html>
