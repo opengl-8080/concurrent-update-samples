@@ -2,10 +2,9 @@ package gl8080.web.pessimistic;
 
 import gl8080.application.pessimistic.EditMemoService;
 import gl8080.application.pessimistic.LockTargetCode;
-import gl8080.logic.optimistic.OptimisticException;
+import gl8080.application.pessimistic.PessimisticLockService;
 import gl8080.logic.pessimistic.Memo;
 import gl8080.logic.pessimistic.MemoDao;
-import gl8080.application.pessimistic.PessimisticLockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,13 +41,19 @@ public class EditMemoController {
         return "pessimistic/edit";
     }
     
-    @PostMapping
+    @PostMapping(params = "update")
     public String update(Model model, MemoForm form, RedirectAttributes attributes, @PathVariable("id") long id) {
         Memo memo = form.toMemo();
         memo.setId(id);
 
         this.service.edit(memo);
         attributes.addFlashAttribute("message", "メモを更新しました");
+        return "redirect:/pessimistic/memo/" + form.getId();
+    }
+
+    @PostMapping(params = "cancel")
+    public String cancel(MemoForm form, @PathVariable("id") long id) {
+        this.lockService.unlock(LockTargetCode.EDIT_MEMO, id);
         return "redirect:/pessimistic/memo/" + form.getId();
     }
 }

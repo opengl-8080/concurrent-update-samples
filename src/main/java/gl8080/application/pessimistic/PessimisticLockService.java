@@ -47,6 +47,7 @@ public class PessimisticLockService implements HttpSessionListener {
         this.pessimisticLockDao.insert(lock);
     }
 
+    @Transactional
     public void unlock(LockTargetCode targetCode, Long targetId) {
         this.pessimisticLockDao.deleteByTargetCodeAndTargetIdAndLoginId(
             targetCode.name(),

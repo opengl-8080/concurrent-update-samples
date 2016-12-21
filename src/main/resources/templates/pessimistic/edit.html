@@ -13,15 +13,14 @@
             <label for="title">タイトル</label>
             <input id="title" name="title" type="text" th:field="*{title}"
                    required="required" maxlength="30" />
-            
+
             <label for="content">内容</label>
             <textarea id="content" name="content" th:field="*{content}"
                       required="required" maxlength="1000">
             </textarea>
-            
-            <input type="submit" value="更新" />
+
+            <input type="submit" name="update" value="更新" />
+            <input type="submit" name="cancel" value="キャンセル" />
         </form>
-    
-        <a th:href="@{/pessimistic/memo}">戻る</a>
     </body>
 </html>
