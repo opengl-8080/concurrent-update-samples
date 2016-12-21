@@ -2,9 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="UTF-8" />
-        <title>Hello Thymeleaf</title>
+        <title>排他制御サンプル</title>
     </head>
     <body>
-        Hello World
+        <ui>
+            <li><a th:href="@{/optimistic/memo}">楽観的排他制御</a></li>
+            <li><a th:href="@{/pessimistic/memo}">悲観的排他制御</a></li>
+        </ui>
     </body>
 </html>

@@ -1,5 +1,8 @@
-package gl8080.logic.pessimistic;
+package gl8080.application.pessimistic;
 
+import gl8080.logic.pessimistic.MemoDao;
+import gl8080.logic.pessimistic.PessimisticLock;
+import gl8080.logic.pessimistic.PessimisticLockDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

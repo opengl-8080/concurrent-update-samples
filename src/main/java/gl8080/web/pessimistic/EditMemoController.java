@@ -2,7 +2,7 @@ package gl8080.web.pessimistic;
 
 import gl8080.logic.pessimistic.Memo;
 import gl8080.logic.pessimistic.MemoDao;
-import gl8080.logic.pessimistic.PessimisticLockService;
+import gl8080.application.pessimistic.PessimisticLockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
