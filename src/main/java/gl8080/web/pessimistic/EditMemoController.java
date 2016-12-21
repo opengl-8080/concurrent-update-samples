@@ -1,5 +1,8 @@
 package gl8080.web.pessimistic;
 
+import gl8080.application.pessimistic.EditMemoService;
+import gl8080.application.pessimistic.LockTargetCode;
+import gl8080.logic.optimistic.OptimisticException;
 import gl8080.logic.pessimistic.Memo;
 import gl8080.logic.pessimistic.MemoDao;
 import gl8080.application.pessimistic.PessimisticLockService;
@@ -8,7 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
 
@@ -20,14 +25,16 @@ public class EditMemoController {
     private MemoDao dao;
     @Autowired
     private PessimisticLockService lockService;
+    @Autowired
+    private EditMemoService service;
     
     @GetMapping
     public String init(Model model, @PathVariable("id") long id) {
         Optional<Memo> memo = this.dao.find(id);
         
         if (memo.isPresent()) {
-            Optional<Long> lockId = this.lockService.tryLock(id);
-            model.addAttribute(MemoForm.valueOf(memo.get(), lockId.get()));
+            this.lockService.tryLock(LockTargetCode.EDIT_MEMO, id);
+            model.addAttribute(MemoForm.valueOf(memo.get()));
         } else {
             model.addAttribute("errorMessage", "メモが存在しません");
         }
@@ -35,18 +42,13 @@ public class EditMemoController {
         return "pessimistic/edit";
     }
     
-//    @PostMapping
-//    public String update(Model model, MemoForm form, RedirectAttributes attributes, @PathVariable("id") long id) {
-//        Memo memo = form.toMemo();
-//        memo.setId(id);
-//        
-//        try {
-//            this.service.modify(memo);
-//            attributes.addFlashAttribute("message", "メモを更新しました");
-//            return "redirect:/pessimistic/memo/" + form.getId();
-//        } catch (OptimisticException e) {
-//            model.addAttribute("errorMessage", "同時更新されています。検索しなおしてください。");
-//            return "pessimistic/modify";
-//        }
-//    }
+    @PostMapping
+    public String update(Model model, MemoForm form, RedirectAttributes attributes, @PathVariable("id") long id) {
+        Memo memo = form.toMemo();
+        memo.setId(id);
+
+        this.service.edit(memo);
+        attributes.addFlashAttribute("message", "メモを更新しました");
+        return "redirect:/pessimistic/memo/" + form.getId();
+    }
 }

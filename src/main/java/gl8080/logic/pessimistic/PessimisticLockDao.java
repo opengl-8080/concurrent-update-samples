@@ -4,17 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.PreparedStatement;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -38,28 +30,18 @@ public class PessimisticLockDao {
         return pessimisticLockList.isEmpty() ? Optional.empty() : Optional.of(pessimisticLockList.get(0));
     }
     
-    public void delete(PessimisticLock pessimisticLock) {
-        this.jdbc.update("delete from pessimistic_lock where id=?", pessimisticLock.getId());
+    public void deleteByTargetCodeAndTargetIdAndLoginId(String targetCode, long targetId, String loginId) {
+        this.jdbc.update("delete from pessimistic_lock where target_code=? and target_id=? and login_id=?",
+                targetCode, targetId, loginId);
     }
     
-    public long insert(long memoId, LocalDateTime updateDatetime) {
-//        KeyHolder holder = new GeneratedKeyHolder();
-//        this.jdbc.update(con -> {
-//            PreparedStatement ps = con.prepareStatement("insert into pessimistic_lock (code, target_id, update_datetime) values (?, ?, ?)");
-//            ps.setString(1, "edit_memo");
-//            ps.setLong(2, memoId);
-//            ps.setTimestamp(3, Timestamp.valueOf(updateDatetime));
-//            return ps;
-//        }, holder);
-
-        SimpleJdbcInsert insert = new SimpleJdbcInsert(this.jdbc).withTableName("pessimistic_lock")
-                .usingGeneratedKeyColumns("id");
-
-        Map<String, Object> values = new HashMap<>();
-        values.put("code", "edit_memo");
-        values.put("target_id", memoId);
-        values.put("update_datetime", Timestamp.valueOf(updateDatetime));
-
-        return insert.executeAndReturnKey(values).longValue();
+    public void deleteByLoginId(String loginId) {
+        this.jdbc.update("delete from pessimistic_lock where login_id=?", loginId);
+    }
+    
+    public void insert(PessimisticLock lock) {
+        this.jdbc.update("insert into pessimistic_lock (target_code, target_id, login_id, update_datetime)" +
+                        "values (?, ?, ?, ?)",
+                lock.getTargetCode(), lock.getTargetId(), lock.getLoginId(), lock.getUpdateDatetime());
     }
 }

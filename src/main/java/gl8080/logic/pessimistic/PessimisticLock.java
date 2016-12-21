@@ -8,8 +8,9 @@ import java.util.Date;
 public class PessimisticLock {
     private static final int EXPIRATION_MINUTE = 3;
     private Long id;
-    private String code;
+    private String targetCode;
     private Long targetId;
+    private String loginId;
     private Date updateDatetime;
 
     public boolean isOver(LocalDateTime now) {
@@ -26,12 +27,12 @@ public class PessimisticLock {
         this.id = id;
     }
 
-    public String getCode() {
-        return code;
+    public String getTargetCode() {
+        return targetCode;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setTargetCode(String targetCode) {
+        this.targetCode = targetCode;
     }
 
     public Long getTargetId() {
@@ -50,12 +51,21 @@ public class PessimisticLock {
         this.updateDatetime = updateDatetime;
     }
 
+    public String getLoginId() {
+        return loginId;
+    }
+
+    public void setLoginId(String loginId) {
+        this.loginId = loginId;
+    }
+
     @Override
     public String toString() {
         return "PessimisticLock{" +
                 "id=" + id +
-                ", code='" + code + '\'' +
+                ", targetCode='" + targetCode + '\'' +
                 ", targetId=" + targetId +
+                ", loginId='" + loginId + '\'' +
                 ", updateDatetime=" + updateDatetime +
                 '}';
     }
