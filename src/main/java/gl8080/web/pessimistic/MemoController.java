@@ -22,10 +22,7 @@ public class MemoController {
         Optional<Memo> memo = this.dao.find(id);
         
         if (memo.isPresent()) {
-            Memo m = memo.get();
-            model.addAttribute("memoId", m.getId());
-            model.addAttribute("title", m.getTitle());
-            model.addAttribute("content", m.getContent());
+            model.addAttribute(memo.get());
         } else {
             model.addAttribute("errorMessage", "メモが存在しません");
         }

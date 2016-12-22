@@ -1,9 +1,8 @@
 package gl8080.web.pessimistic;
 
 import gl8080.application.pessimistic.EditMemoService;
-import gl8080.application.pessimistic.PessimisticLockException;
-import gl8080.logic.pessimistic.LockTargetCode;
 import gl8080.application.pessimistic.PessimisticLockService;
+import gl8080.logic.pessimistic.LockTargetCode;
 import gl8080.logic.pessimistic.Memo;
 import gl8080.logic.pessimistic.MemoDao;
 import gl8080.logic.pessimistic.PessimisticLock;
@@ -31,7 +30,7 @@ public class EditMemoController {
     @Autowired
     private EditMemoService editService;
     
-    @GetMapping
+    @PostMapping
     public String init(Model model, @PathVariable("id") long id, RedirectAttributes attributes) {
         Optional<Memo> memo = this.dao.find(id);
         
