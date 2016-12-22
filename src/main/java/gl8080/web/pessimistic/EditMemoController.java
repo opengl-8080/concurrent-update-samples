@@ -9,7 +9,6 @@ import gl8080.logic.pessimistic.PessimisticLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,18 +55,18 @@ public class EditMemoController {
     }
     
     @PostMapping(params = "update")
-    public String update(Model model, MemoForm form, RedirectAttributes attributes, @PathVariable("id") long id) {
+    public String update(MemoForm form, RedirectAttributes attributes, @PathVariable("id") long id) {
         Memo memo = form.toMemo();
         memo.setId(id);
 
         this.editService.edit(memo);
         attributes.addFlashAttribute("message", "メモを更新しました");
-        return "redirect:/pessimistic/memo/" + form.getId();
+        return "redirect:/pessimistic/memo/" + id;
     }
 
     @PostMapping(params = "cancel")
-    public String cancel(MemoForm form, @PathVariable("id") long id) {
+    public String cancel(@PathVariable("id") long id) {
         this.lockService.unlock(LockTargetCode.EDIT_MEMO, id);
-        return "redirect:/pessimistic/memo/" + form.getId();
+        return "redirect:/pessimistic/memo/" + id;
     }
 }

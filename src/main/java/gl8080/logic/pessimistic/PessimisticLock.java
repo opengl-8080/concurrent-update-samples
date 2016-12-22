@@ -26,6 +26,10 @@ public class PessimisticLock {
         LocalDateTime startTime = this.startTime();
         return startTime.plusMinutes(EXPIRATION_MINUTE);
     }
+
+    public boolean isCreatedBy(String loginId) {
+        return this.loginId.equals(loginId);
+    }
     
     public Long getId() {
         return id;
@@ -76,9 +80,5 @@ public class PessimisticLock {
                 ", loginId='" + loginId + '\'' +
                 ", updateDatetime=" + updateDatetime +
                 '}';
-    }
-
-    public boolean isCreatedBy(String loginId) {
-        return this.loginId.equals(loginId);
     }
 }
