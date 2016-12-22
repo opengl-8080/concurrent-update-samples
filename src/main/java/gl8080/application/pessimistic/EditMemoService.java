@@ -1,5 +1,6 @@
 package gl8080.application.pessimistic;
 
+import gl8080.logic.pessimistic.LockTargetCode;
 import gl8080.logic.pessimistic.Memo;
 import gl8080.logic.pessimistic.MemoDao;
 import org.springframework.beans.factory.annotation.Autowired;

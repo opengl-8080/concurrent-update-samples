@@ -69,4 +69,8 @@ public class PessimisticLock {
                 ", updateDatetime=" + updateDatetime +
                 '}';
     }
+
+    public boolean isCreatedBy(String loginId) {
+        return this.loginId.equals(loginId);
+    }
 }

@@ -24,15 +24,16 @@ public class PessimisticLockDao {
         return list.isEmpty() ? Optional.empty() : Optional.of(list.get(0));
     }
     
-    public Optional<PessimisticLock> findByMemoId(long memoId) {
+    public Optional<PessimisticLock> findByTargetCodeAndId(LockTargetCode code, long id) {
         RowMapper<PessimisticLock> rowMapper = new BeanPropertyRowMapper<>(PessimisticLock.class);
-        List<PessimisticLock> pessimisticLockList = this.jdbc.query("select * from pessimistic_lock where memo_id=?", new Object[]{memoId}, rowMapper);
+        List<PessimisticLock> pessimisticLockList =
+                this.jdbc.query("select * from pessimistic_lock where target_code=? and target_id=?", new Object[]{code.name(), id}, rowMapper);
         return pessimisticLockList.isEmpty() ? Optional.empty() : Optional.of(pessimisticLockList.get(0));
     }
     
-    public void deleteByTargetCodeAndTargetIdAndLoginId(String targetCode, long targetId, String loginId) {
+    public void deleteByTargetCodeAndIdAndLoginId(LockTargetCode code, long id, String loginId) {
         this.jdbc.update("delete from pessimistic_lock where target_code=? and target_id=? and login_id=?",
-                targetCode, targetId, loginId);
+                code.name(), id, loginId);
     }
     
     public void deleteByLoginId(String loginId) {

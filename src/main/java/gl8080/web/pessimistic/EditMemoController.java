@@ -1,7 +1,8 @@
 package gl8080.web.pessimistic;
 
 import gl8080.application.pessimistic.EditMemoService;
-import gl8080.application.pessimistic.LockTargetCode;
+import gl8080.application.pessimistic.PessimisticLockException;
+import gl8080.logic.pessimistic.LockTargetCode;
 import gl8080.application.pessimistic.PessimisticLockService;
 import gl8080.logic.pessimistic.Memo;
 import gl8080.logic.pessimistic.MemoDao;
@@ -25,20 +26,25 @@ public class EditMemoController {
     @Autowired
     private PessimisticLockService lockService;
     @Autowired
-    private EditMemoService service;
+    private EditMemoService editService;
     
     @GetMapping
-    public String init(Model model, @PathVariable("id") long id) {
+    public String init(Model model, @PathVariable("id") long id, RedirectAttributes attributes) {
         Optional<Memo> memo = this.dao.find(id);
-        
-        if (memo.isPresent()) {
-            this.lockService.tryLock(LockTargetCode.EDIT_MEMO, id);
-            model.addAttribute(MemoForm.valueOf(memo.get()));
-        } else {
-            model.addAttribute("errorMessage", "メモが存在しません");
-        }
 
-        return "pessimistic/edit";
+        try {
+            if (memo.isPresent()) {
+                this.lockService.tryLock(LockTargetCode.EDIT_MEMO, id);
+                model.addAttribute(MemoForm.valueOf(memo.get()));
+            } else {
+                model.addAttribute("errorMessage", "メモが存在しません");
+            }
+    
+            return "pessimistic/edit";
+        } catch (PessimisticLockException e) {
+            attributes.addFlashAttribute("errorMessage", "他の人が編集中です。しばらく時間を置いてからアクセスしなおしてください。");
+            return "redirect:/pessimistic/memo/" + id;
+        }
     }
     
     @PostMapping(params = "update")
@@ -46,7 +52,7 @@ public class EditMemoController {
         Memo memo = form.toMemo();
         memo.setId(id);
 
-        this.service.edit(memo);
+        this.editService.edit(memo);
         attributes.addFlashAttribute("message", "メモを更新しました");
         return "redirect:/pessimistic/memo/" + form.getId();
     }

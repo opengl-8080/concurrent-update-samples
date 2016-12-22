@@ -1,6 +1,7 @@
 package gl8080.application.pessimistic;
 
 import gl8080.application.login.LoginUser;
+import gl8080.logic.pessimistic.LockTargetCode;
 import gl8080.logic.pessimistic.MemoDao;
 import gl8080.logic.pessimistic.PessimisticLock;
 import gl8080.logic.pessimistic.PessimisticLockDao;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class PessimisticLockService implements HttpSessionListener {
@@ -27,30 +29,27 @@ public class PessimisticLockService implements HttpSessionListener {
     @Transactional
     public void tryLock(LockTargetCode targetCode, long targetId) {
 //        this.pessimisticLockDao.lockTable();
-//        Optional<PessimisticLock> lock = this.pessimisticLockDao.findByMemoId(memoId);
-//        
-//        if (lock.isPresent()) {
-//            PessimisticLock pessimisticLock = lock.get();
-//            
-//            if (!pessimisticLock.isOver(LocalDateTime.now())) {
-//                return Optional.empty();
-//            }
-//
-//            this.pessimisticLockDao.delete(pessimisticLock);
-//        }
-
-        PessimisticLock lock = new PessimisticLock();
-        lock.setTargetCode(targetCode.name());
-        lock.setTargetId(targetId);
-        lock.setLoginId(this.loginUser.getLoginId());
-        lock.setUpdateDatetime(new Date());
-        this.pessimisticLockDao.insert(lock);
+        Optional<PessimisticLock> currentLock = this.pessimisticLockDao.findByTargetCodeAndId(LockTargetCode.EDIT_MEMO, targetId);
+        
+        if (currentLock.isPresent()) {
+            PessimisticLock lock = currentLock.get();
+            if (!lock.isCreatedBy(this.loginUser.getLoginId())) {
+                throw new PessimisticLockException();
+            }
+        } else {
+            PessimisticLock newLock = new PessimisticLock();
+            newLock.setTargetCode(targetCode.name());
+            newLock.setTargetId(targetId);
+            newLock.setLoginId(this.loginUser.getLoginId());
+            newLock.setUpdateDatetime(new Date());
+            this.pessimisticLockDao.insert(newLock);
+        }
     }
 
     @Transactional
     public void unlock(LockTargetCode targetCode, Long targetId) {
-        this.pessimisticLockDao.deleteByTargetCodeAndTargetIdAndLoginId(
-            targetCode.name(),
+        this.pessimisticLockDao.deleteByTargetCodeAndIdAndLoginId(
+            targetCode,
             targetId,
             this.loginUser.getLoginId()
         );
