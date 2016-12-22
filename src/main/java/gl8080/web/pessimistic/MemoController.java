@@ -22,7 +22,7 @@ public class MemoController {
         Optional<Memo> memo = this.dao.find(id);
         
         if (memo.isPresent()) {
-            model.addAttribute(memo.get());
+            model.addAttribute(MemoForm.valueOf(memo.get()));
         } else {
             model.addAttribute("errorMessage", "メモが存在しません");
         }

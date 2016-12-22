@@ -5,7 +5,7 @@
         <title>悲観的排他制御</title>
     </head>
     <body>
-        <form th:object="${memo}" th:action="@{/pessimistic/memo/{memoId}/edit(memoId=*{id})}" method="POST">
+        <form th:object="${memoForm}" th:action="@{/pessimistic/memo/{memoId}/edit(memoId=*{id})}" method="POST">
             <h1 th:text="*{title}">title</h1>
 
             <h3 th:text="${errorMessage}"></h3>
