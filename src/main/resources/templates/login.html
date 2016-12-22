@@ -2,16 +2,25 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="UTF-8" />
+        <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" type="text/css" />
         <title>Hello Thymeleaf</title>
     </head>
     <body>
-        <form action="login" method="POST" th:object="${loginForm}">
-            <select th:field="*{loginId}">
-                <option value="tom">トム</option>
-                <option value="john">ジョン</option>
-                <option value="mike">マイク</option>
-            </select>
-            <input type="submit" value="ログイン" />
+        <form action="login" method="POST" th:object="${loginForm}" class="container">
+            <div class="row">
+                <div class="col-xs-offset-5 col-xs-2">
+                    <div class="form-group">
+                        <label for="loginUser" class="control-label">ログインユーザー</label>
+                        <select id="loginUser" th:field="*{loginId}" class="form-control">
+                            <option value="tom">トム</option>
+                            <option value="john">ジョン</option>
+                            <option value="mike">マイク</option>
+                        </select>
+                    </div>
+
+                    <input type="submit" value="ログイン" class="btn btn-primary" />
+                </div>
+            </div>
         </form>
     </body>
 </html>

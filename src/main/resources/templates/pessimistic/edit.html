@@ -2,28 +2,46 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="UTF-8" />
+        <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" type="text/css" />
         <title>悲観的排他制御</title>
     </head>
     <body>
-        <h1>メモ編集</h1>
-        
-        <span th:inline="text">[[${startTime}]] に編集を開始しました。[[${endTime}]] まで編集できます。</span>
-        
-        <h3 th:text="${errorMessage}"></h3>
-        <h3 th:text="${message}"></h3>
-        
-        <form th:if="${memoForm != null}" th:action="@{/pessimistic/memo/{id}/edit(id=${memoForm.id})}" method="POST" th:object="${memoForm}">
-            <label for="title">タイトル</label>
-            <input id="title" name="title" type="text" th:field="*{title}"
-                   required="required" maxlength="30" />
+        <div class="container">
+            <form th:if="${memoForm != null}" th:action="@{/pessimistic/memo/{id}/edit(id=${memoForm.id})}" method="POST" th:object="${memoForm}">
+                <div class="row">
+                    <div class="col-xs-offset-3 col-xs-6">
+                        <h1 class="text-center">メモ編集</h1>
+    
+                        <span th:inline="text">[[${startTime}]] に編集を開始しました。[[${endTime}]] まで編集できます。</span>
+    
+                        <h3 class="text-danger" th:text="${errorMessage}"></h3>
+                        <h3 class="text-success" th:text="${message}"></h3>
+    
+                        <div class="form-group">
+                            <label for="title" class="control-label">タイトル</label>
+                            <input id="title" name="title" type="text" th:field="*{title}"
+                                   required="required" maxlength="30"
+                                   class="form-control" />
+                        </div>
 
-            <label for="content">内容</label>
-            <textarea id="content" name="content" th:field="*{content}"
-                      required="required" maxlength="1000">
-            </textarea>
-
-            <input type="submit" name="update" value="更新" />
-            <input type="submit" name="cancel" value="キャンセル" />
-        </form>
+                        <div class="form-group">
+                            <label for="content" class="control-label">内容</label>
+                            <textarea id="content" name="content" th:field="*{content}"
+                                      required="required" maxlength="1000" class="form-control">
+                            </textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-xs-offset-3 col-xs-1">
+                        <input type="submit" name="update" value="更新" class="btn btn-primary"/>
+                    </div>
+                    <div class="col-xs-2">
+                        <input type="submit" name="cancel" value="キャンセル" class="btn btn-danger" />
+                    </div>
+                </div>
+            </form>
+        </div>
     </body>
 </html>

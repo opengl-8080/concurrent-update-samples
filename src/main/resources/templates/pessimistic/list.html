@@ -2,30 +2,52 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="UTF-8" />
+        <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" type="text/css" />
         <title>悲観的排他制御</title>
     </head>
     <body>
-        <h1>悲観的排他制御</h1>
-        <h3 th:text="${errorMessage}"></h3>
-        <h3 th:text="${message}"></h3>
-        
-        <form action="/pessimistic/memo" method="POST" th:object="${memoForm}">
-            <label for="title">タイトル</label>
-            <input id="title" name="title" type="text" th:field="*{title}"
-                   required="required" maxlength="30" />
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-offset-3 col-xs-6">
+                    <h1 class="text-center">メモ一覧</h1>
+                    <h3 class="text-danger" th:text="${errorMessage}"></h3>
+                    <h3 class="text-primary" th:text="${message}"></h3>
+
+                    <a th:href="@{/}" class="pull-right">戻る</a>
+                    
+                    <form action="/pessimistic/memo" method="POST" th:object="${memoForm}">
+                        <div class="form-group">
+                            <label for="title" class="control-label">タイトル</label>
+                            <input id="title" name="title" type="text" th:field="*{title}"
+                                   required="required" maxlength="30"
+                                   class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="content" class="control-label">内容</label>
+                            <textarea id="content" name="content" th:field="*{content}"
+                                      required="required" maxlength="1000" class="form-control">
+                            </textarea>
+                        </div>
+
+                        <input type="submit" value="登録" class="btn btn-primary" />
+                    </form>
+                </div>
+            </div>
             
-            <label for="content">内容</label>
-            <textarea id="content" name="content" th:field="*{content}"
-                      required="required" maxlength="1000">
-            </textarea>
-            
-            <input type="submit" value="登録" />
-        </form>
-    
-        <div th:each="memo : ${memoList}">
-            <a th:href="@{/pessimistic/memo/{id}(id=${memo.id})}" th:text="${memo.title}">
-                title
-            </a>
+            <hr />
+
+            <div class="row">
+                <div class="col-xs-offset-3 col-xs-6">
+                    <div class="list-group">
+                        <a th:each="memo : ${memoList}"
+                           th:href="@{/pessimistic/memo/{id}(id=${memo.id})}" th:text="${memo.title}"
+                           class="list-group-item">
+                            title
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </body>
 </html>
