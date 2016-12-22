@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
+import javax.swing.text.html.Option;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
 
@@ -27,23 +29,40 @@ public class PessimisticLockService implements HttpSessionListener {
     private PessimisticLockDao pessimisticLockDao;
     
     @Transactional
-    public void tryLock(LockTargetCode targetCode, long targetId) {
-//        this.pessimisticLockDao.lockTable();
-        Optional<PessimisticLock> currentLock = this.pessimisticLockDao.findByTargetCodeAndId(LockTargetCode.EDIT_MEMO, targetId);
+    public Optional<PessimisticLock> tryLock(LockTargetCode targetCode, long targetId) {
+        this.pessimisticLockDao.lockTable();
         
-        if (currentLock.isPresent()) {
-            PessimisticLock lock = currentLock.get();
-            if (!lock.isCreatedBy(this.loginUser.getLoginId())) {
-                throw new PessimisticLockException();
-            }
-        } else {
-            PessimisticLock newLock = new PessimisticLock();
-            newLock.setTargetCode(targetCode.name());
-            newLock.setTargetId(targetId);
-            newLock.setLoginId(this.loginUser.getLoginId());
-            newLock.setUpdateDatetime(new Date());
-            this.pessimisticLockDao.insert(newLock);
+        Optional<PessimisticLock> currentLock = this.pessimisticLockDao.findByTargetCodeAndId(targetCode, targetId);
+        
+        if (!currentLock.isPresent()) {
+            logger.info("lock is not exists.");
+            return Optional.of(this.lock(targetCode, targetId));
         }
+        
+        PessimisticLock lock = currentLock.get();
+        
+        if (lock.isExpired(LocalDateTime.now())) {
+            logger.info("lock is expired.");
+            this.pessimisticLockDao.delete(lock);
+            return Optional.of(this.lock(targetCode, targetId));
+        }
+        
+        if (!lock.isCreatedBy(this.loginUser.getLoginId())) {
+            return Optional.empty();
+        }
+        
+        return Optional.of(lock);
+    }
+    
+    private PessimisticLock lock(LockTargetCode targetCode, long targetId) {
+        PessimisticLock newLock = new PessimisticLock();
+        newLock.setTargetCode(targetCode.name());
+        newLock.setTargetId(targetId);
+        newLock.setLoginId(this.loginUser.getLoginId());
+        newLock.setUpdateDatetime(new Date());
+        this.pessimisticLockDao.insert(newLock);
+        logger.info("lock(code=" + targetCode + ", id=" + targetId + ")");
+        return newLock;
     }
 
     @Transactional

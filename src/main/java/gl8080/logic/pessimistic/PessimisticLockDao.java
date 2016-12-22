@@ -45,4 +45,8 @@ public class PessimisticLockDao {
                         "values (?, ?, ?, ?)",
                 lock.getTargetCode(), lock.getTargetId(), lock.getLoginId(), lock.getUpdateDatetime());
     }
+
+    public void delete(PessimisticLock lock) {
+        this.jdbc.update("delete from pessimistic_lock where id=?", lock.getId());
+    }
 }

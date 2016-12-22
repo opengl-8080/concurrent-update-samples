@@ -6,6 +6,9 @@
     </head>
     <body>
         <h1>メモ編集</h1>
+        
+        <span th:inline="text">[[${startTime}]] に編集を開始しました。[[${endTime}]] まで編集できます。</span>
+        
         <h3 th:text="${errorMessage}"></h3>
         <h3 th:text="${message}"></h3>
         
