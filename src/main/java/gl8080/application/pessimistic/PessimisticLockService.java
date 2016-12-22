@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
-import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
@@ -64,7 +63,7 @@ public class PessimisticLockService implements HttpSessionListener {
         logger.info("lock(code=" + targetCode + ", id=" + targetId + ")");
         return newLock;
     }
-
+    
     @Transactional
     public void unlock(LockTargetCode targetCode, Long targetId) {
         this.pessimisticLockDao.deleteByTargetCodeAndIdAndLoginId(

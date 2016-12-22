@@ -12,7 +12,8 @@
                     <div class="col-xs-offset-3 col-xs-6">
                         <h1 class="text-center">メモ編集</h1>
     
-                        <span th:inline="text">[[${startTime}]] に編集を開始しました。[[${endTime}]] まで編集できます。</span>
+                        <span th:if="${startTime != null}" 
+                              th:inline="text">[[${startTime}]] に編集を開始しました。[[${endTime}]] まで編集できます。</span>
     
                         <h3 class="text-danger" th:text="${errorMessage}"></h3>
                         <h3 class="text-success" th:text="${message}"></h3>

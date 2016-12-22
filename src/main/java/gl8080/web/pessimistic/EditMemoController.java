@@ -1,6 +1,7 @@
 package gl8080.web.pessimistic;
 
 import gl8080.application.pessimistic.EditMemoService;
+import gl8080.application.pessimistic.PessimisticLockException;
 import gl8080.application.pessimistic.PessimisticLockService;
 import gl8080.logic.pessimistic.LockTargetCode;
 import gl8080.logic.pessimistic.Memo;
@@ -55,13 +56,18 @@ public class EditMemoController {
     }
     
     @PostMapping(params = "update")
-    public String update(MemoForm form, RedirectAttributes attributes, @PathVariable("id") long id) {
+    public String update(MemoForm form, RedirectAttributes attributes, @PathVariable("id") long id, Model model) {
         Memo memo = form.toMemo();
         memo.setId(id);
 
-        this.editService.edit(memo);
-        attributes.addFlashAttribute("message", "メモを更新しました");
-        return "redirect:/pessimistic/memo/" + id;
+        try {
+            this.editService.edit(memo);
+            attributes.addFlashAttribute("message", "メモを更新しました");
+            return "redirect:/pessimistic/memo/" + id;
+        } catch (PessimisticLockException e) {
+            model.addAttribute("errorMessage", "編集期限が切れています。編集をやりなおしてください。");
+            return "pessimistic/edit";
+        }
     }
 
     @PostMapping(params = "cancel")

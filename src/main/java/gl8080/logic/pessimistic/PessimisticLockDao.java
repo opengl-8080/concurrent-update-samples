@@ -20,13 +20,25 @@ public class PessimisticLockDao {
     
     public Optional<PessimisticLock> findByTargetCodeAndId(LockTargetCode code, long id) {
         RowMapper<PessimisticLock> rowMapper = new BeanPropertyRowMapper<>(PessimisticLock.class);
-        
+
         List<PessimisticLock> pessimisticLockList =
                 this.jdbc.query("select * from pessimistic_lock where target_code=? and target_id=?",
-                    new Object[]{code.name(), id},
-                    rowMapper
+                        new Object[]{code.name(), id},
+                        rowMapper
                 );
-        
+
+        return pessimisticLockList.isEmpty() ? Optional.empty() : Optional.of(pessimisticLockList.get(0));
+    }
+
+    public Optional<PessimisticLock> findByTargetCodeAndIdAndLoginIdForUpdate(LockTargetCode code, long id, String loginId) {
+        RowMapper<PessimisticLock> rowMapper = new BeanPropertyRowMapper<>(PessimisticLock.class);
+
+        List<PessimisticLock> pessimisticLockList =
+            this.jdbc.query("select * from pessimistic_lock where target_code=? and target_id=? and login_id=? for update",
+                new Object[]{code.name(), id, loginId},
+                rowMapper
+            );
+
         return pessimisticLockList.isEmpty() ? Optional.empty() : Optional.of(pessimisticLockList.get(0));
     }
     
