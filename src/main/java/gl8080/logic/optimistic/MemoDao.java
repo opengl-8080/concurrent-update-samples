@@ -16,8 +16,10 @@ public class MemoDao {
     private JdbcTemplate jdbc;
     
     public List<Memo> findAll() {
-        BeanPropertyRowMapper<Memo> rowMapper = new BeanPropertyRowMapper<>(Memo.class);
-        return this.jdbc.query("select * from memo_for_optimistic order by id asc", new Object[0], rowMapper);
+        return this.jdbc.query("select * from memo_for_optimistic order by id asc",
+            new Object[0],
+            new BeanPropertyRowMapper<>(Memo.class)
+        );
     }
     
     public Optional<Memo> findForUpdate(long id) {
@@ -29,24 +31,28 @@ public class MemoDao {
     }
 
     private Optional<Memo> find(long id, boolean forUpdate) {
-        BeanPropertyRowMapper<Memo> rowMapper = new BeanPropertyRowMapper<>(Memo.class);
-        List<Memo> list = this.jdbc.query("select * from memo_for_optimistic where id=?" + (forUpdate ? " for update" : ""), new Object[]{id}, rowMapper);
+        List<Memo> list = this.jdbc.query("select * from memo_for_optimistic where id=?" + (forUpdate ? " for update" : ""),
+            new Object[]{id},
+            new BeanPropertyRowMapper<>(Memo.class)
+        );
 
         return list.isEmpty() ? Optional.empty() : Optional.of(list.get(0));
     }
     
     public void insert(Memo memo) {
-        this.jdbc.update(
-            "insert into memo_for_optimistic (title, content, update_datetime) values (?, ?, ?)", 
-                memo.getTitle(), memo.getContent(), new Date());
+        this.jdbc.update("insert into memo_for_optimistic (title, content, update_datetime) values (?, ?, ?)", 
+            memo.getTitle(),
+            memo.getContent(),
+            new Date()
+        );
     }
     
     public void update(Memo memo) {
         this.jdbc.update("update memo_for_optimistic set title=?, content=?, update_datetime=? where id=?",
-                memo.getTitle(),
-                memo.getContent(),
-                new Date(),
-                memo.getId()
+            memo.getTitle(),
+            memo.getContent(),
+            new Date(),
+            memo.getId()
         );
     }
 }

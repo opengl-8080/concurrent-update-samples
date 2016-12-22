@@ -2,8 +2,8 @@ package gl8080.web.optimistic;
 
 import gl8080.logic.optimistic.Memo;
 import gl8080.logic.optimistic.MemoDao;
-import gl8080.logic.optimistic.ModifyMemoService;
-import gl8080.logic.optimistic.OptimisticException;
+import gl8080.application.optimistic.EditMemoService;
+import gl8080.application.optimistic.OptimisticException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,14 +15,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
 
-@Controller
+@Controller("optimisticEditMemoController")
 @RequestMapping("/optimistic/memo/{id}")
-public class ModifyController {
+public class EditMemoController {
     
     @Autowired
     private MemoDao dao;
     @Autowired
-    private ModifyMemoService service;
+    private EditMemoService service;
     
     @GetMapping
     public String init(Model model, @PathVariable("id") long id) {
@@ -33,7 +33,7 @@ public class ModifyController {
             model.addAttribute("errorMessage", "メモが存在しません");
         }
 
-        return "optimistic/modify";
+        return "optimistic/edit";
     }
     
     @PostMapping
@@ -42,12 +42,12 @@ public class ModifyController {
         memo.setId(id);
         
         try {
-            this.service.modify(memo);
+            this.service.edit(memo);
             attributes.addFlashAttribute("message", "メモを更新しました");
-            return "redirect:/optimistic/memo/" + form.getId();
+            return "redirect:/optimistic/memo/" + id;
         } catch (OptimisticException e) {
             model.addAttribute("errorMessage", "同時更新されています。検索しなおしてください。");
-            return "optimistic/modify";
+            return "optimistic/edit";
         }
     }
 }
