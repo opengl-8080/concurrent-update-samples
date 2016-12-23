@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
     <head>
-        <meta charset="UTF-8" />
-        <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" type="text/css" />
-        <title>排他制御サンプル</title>
+        <title>排他制御選択</title>
     </head>
     <body>
-        <div class="container">
+        <h1 layout:fragment="subTitle">排他制御の種類を選択してください</h1>
+        
+        <div layout:fragment="content">
             <div class="row">
                 <div class="col-xs-offset-4 col-xs-4">
                     <div class="list-group">

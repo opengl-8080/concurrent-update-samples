@@ -1,26 +1,31 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
     <head>
-        <meta charset="UTF-8" />
-        <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" type="text/css" />
-        <title>Hello Thymeleaf</title>
+        <title>ログイン</title>
     </head>
     <body>
-        <form action="login" method="POST" th:object="${loginForm}" class="container">
+        <h1 layout:fragment="subTitle">
+            ログイン
+        </h1>
+        
+        <div layout:fragment="content">
             <div class="row">
                 <div class="col-xs-offset-5 col-xs-2">
-                    <div class="form-group">
-                        <label for="loginUser" class="control-label">ログインユーザー</label>
-                        <select id="loginUser" th:field="*{loginId}" class="form-control">
-                            <option value="tom">トム</option>
-                            <option value="john">ジョン</option>
-                            <option value="mike">マイク</option>
-                        </select>
-                    </div>
-
-                    <input type="submit" value="ログイン" class="btn btn-primary" />
+                    <form action="login" method="POST" th:object="${loginForm}">
+                        <div class="form-group">
+                            <label for="loginUser" class="control-label">ログインユーザー</label>
+                            <select id="loginUser" th:field="*{loginId}" class="form-control">
+                                <option value="tom">トム</option>
+                                <option value="john">ジョン</option>
+                                <option value="mike">マイク</option>
+                            </select>
+                        </div>
+                        <input type="submit" value="ログイン" class="btn btn-primary" />
+                    </form>
                 </div>
             </div>
-        </form>
+        </div>
     </body>
 </html>

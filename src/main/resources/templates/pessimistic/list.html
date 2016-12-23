@@ -1,18 +1,16 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
     <head>
-        <meta charset="UTF-8" />
-        <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" type="text/css" />
         <title>悲観的排他制御</title>
     </head>
     <body>
-        <div class="container">
+        <h1 layout:fragment="subTitle">メモ一覧</h1>
+        
+        <div layout:fragment="content">
             <div class="row">
                 <div class="col-xs-offset-3 col-xs-6">
-                    <h1 class="text-center">メモ一覧</h1>
-                    <h3 class="text-danger" th:text="${errorMessage}"></h3>
-                    <h3 class="text-primary" th:text="${message}"></h3>
-
                     <a th:href="@{/}" class="pull-right">戻る</a>
                     
                     <form action="/pessimistic/memo" method="POST" th:object="${memoForm}">
