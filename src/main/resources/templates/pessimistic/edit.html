@@ -8,12 +8,15 @@
     <body>
         <h1 layout:fragment="subTitle">メモ編集</h1>
         
+        <h4 layout:fragment="message">
+            <span th:if="${startTime != null}"
+                  th:inline="text">[[${startTime}]] に編集を開始しました。[[${endTime}]] まで編集できます。</span>
+        </h4>
+        
         <div layout:fragment="content">
             <form th:if="${memoForm != null}" th:action="@{/pessimistic/memo/{id}/edit(id=${memoForm.id})}" method="POST" th:object="${memoForm}">
                 <div class="row">
                     <div class="col-xs-offset-3 col-xs-6">
-                        <span th:if="${startTime != null}" 
-                              th:inline="text">[[${startTime}]] に編集を開始しました。[[${endTime}]] まで編集できます。</span>
     
                         <div class="form-group">
                             <label for="title" class="control-label">タイトル</label>
