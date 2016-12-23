@@ -12,9 +12,13 @@ import java.util.Optional;
 @Repository
 public class MemoDao {
     
-    @Autowired
     private JdbcTemplate jdbc;
-    
+
+    @Autowired
+    public MemoDao(JdbcTemplate jdbc) {
+        this.jdbc = jdbc;
+    }
+
     public List<Memo> findAll() {
         return this.jdbc.query("select * from memo_for_optimistic order by id asc",
             new Object[0],

@@ -15,9 +15,13 @@ import java.io.IOException;
 
 @Component
 public class AuthenticationFilter implements Filter {
-    @Autowired
     private LoginUser loginUser;
-    
+
+    @Autowired
+    public AuthenticationFilter(LoginUser loginUser) {
+        this.loginUser = loginUser;
+    }
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;

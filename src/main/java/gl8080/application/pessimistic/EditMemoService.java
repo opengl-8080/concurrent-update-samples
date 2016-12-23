@@ -14,15 +14,19 @@ import java.time.LocalDateTime;
 
 @Service("pessimisticEditMemoService")
 public class EditMemoService {
-    @Autowired
     private LoginUser loginUser;
-    @Autowired
     private MemoDao memoDao;
-    @Autowired
     private PessimisticLockService lockService;
-    @Autowired
     private PessimisticLockDao lockDao;
-    
+
+    @Autowired
+    public EditMemoService(LoginUser loginUser, MemoDao memoDao, PessimisticLockService lockService, PessimisticLockDao lockDao) {
+        this.loginUser = loginUser;
+        this.memoDao = memoDao;
+        this.lockService = lockService;
+        this.lockDao = lockDao;
+    }
+
     @Transactional
     public void edit(Memo memo) {
         PessimisticLock lock =

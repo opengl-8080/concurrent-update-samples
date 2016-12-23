@@ -11,8 +11,12 @@ import java.util.Optional;
 @Repository("pessimisticMemoDao")
 public class MemoDao {
 
-    @Autowired
     private JdbcTemplate jdbc;
+
+    @Autowired
+    public MemoDao(JdbcTemplate jdbc) {
+        this.jdbc = jdbc;
+    }
 
     public List<Memo> findAll() {
         return this.jdbc.query(

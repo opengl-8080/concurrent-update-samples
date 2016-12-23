@@ -22,14 +22,17 @@ import java.util.Optional;
 @RequestMapping("/pessimistic/memo/{id}/edit")
 public class EditMemoController {
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
-    
-    @Autowired
     private MemoDao dao;
-    @Autowired
     private PessimisticLockService lockService;
-    @Autowired
     private EditMemoService editService;
-    
+
+    @Autowired
+    public EditMemoController(MemoDao dao, PessimisticLockService lockService, EditMemoService editService) {
+        this.dao = dao;
+        this.lockService = lockService;
+        this.editService = editService;
+    }
+
     @PostMapping
     public String init(Model model, @PathVariable("id") long id, RedirectAttributes attributes) {
         Optional<Memo> memo = this.dao.find(id);

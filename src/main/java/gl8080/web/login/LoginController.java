@@ -12,9 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/login")
 public class LoginController {
     
-    @Autowired
     private LoginUser loginUser;
-    
+
+    @Autowired
+    public LoginController(LoginUser loginUser) {
+        this.loginUser = loginUser;
+    }
+
     @GetMapping
     public String init(Model model) {
         model.addAttribute(new LoginForm());

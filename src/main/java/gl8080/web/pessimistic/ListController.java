@@ -18,8 +18,12 @@ import static java.util.stream.Collectors.*;
 @RequestMapping("/pessimistic/memo")
 public class ListController {
 
-    @Autowired
     private MemoDao dao;
+
+    @Autowired
+    public ListController(MemoDao dao) {
+        this.dao = dao;
+    }
 
     @GetMapping
     public String init(Model model) {

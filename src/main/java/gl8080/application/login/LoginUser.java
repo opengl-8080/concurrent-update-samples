@@ -12,9 +12,13 @@ import java.io.Serializable;
 @Component
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class LoginUser implements Serializable {
-    @Autowired
     private HttpServletRequest request;
     private String loginId;
+
+    @Autowired
+    public LoginUser(HttpServletRequest request) {
+        this.request = request;
+    }
 
     public String getLoginId() {
         return loginId;

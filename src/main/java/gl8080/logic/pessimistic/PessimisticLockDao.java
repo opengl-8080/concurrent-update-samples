@@ -11,9 +11,13 @@ import java.util.Optional;
 
 @Repository
 public class PessimisticLockDao {
-    @Autowired
     private JdbcTemplate jdbc;
-    
+
+    @Autowired
+    public PessimisticLockDao(JdbcTemplate jdbc) {
+        this.jdbc = jdbc;
+    }
+
     public void lockTable() {
         this.jdbc.execute("lock table pessimistic_lock write");
     }

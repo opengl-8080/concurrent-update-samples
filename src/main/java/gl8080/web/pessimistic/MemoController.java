@@ -14,9 +14,13 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/pessimistic/memo/{id}")
 public class MemoController {
-    @Autowired
     private MemoDao dao;
-    
+
+    @Autowired
+    public MemoController(MemoDao dao) {
+        this.dao = dao;
+    }
+
     @GetMapping
     public String init(@PathVariable("id") long id, Model model) {
         Optional<Memo> memo = this.dao.find(id);

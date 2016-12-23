@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
+    <head>
+        <title>悲観的排他制御</title>
+    </head>
+    <body>
+        <h1 layout:fragment="subTitle" th:text="${memoForm.title}"></h1>
+        
+        <div layout:fragment="content">
+            <div class="row">
+                <div class="col-xs-offset-3 col-xs-6">
+                    <form th:object="${memoForm}" th:action="@{/pessimistic/memo/{memoId}/edit(memoId=*{id})}" method="POST">
+                        <a th:href="@{/pessimistic/memo}" class="pull-right">戻る</a>
+
+                        <div class="form-group">
+                            <label class="control-label">内容</label>
+                            <pre th:text="*{content}"></pre>
+                        </div>
+
+                        <input type="submit" value="編集" class="btn btn-primary" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

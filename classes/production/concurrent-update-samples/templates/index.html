@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
+    <head>
+        <title>排他制御選択</title>
+    </head>
+    <body>
+        <h1 layout:fragment="subTitle">排他制御の種類を選択してください</h1>
+        
+        <div layout:fragment="content">
+            <div class="row">
+                <div class="col-xs-offset-4 col-xs-4">
+                    <div class="list-group">
+                        <a class="list-group-item" th:href="@{/optimistic/memo}">楽観的排他制御</a>
+                        <a class="list-group-item" th:href="@{/pessimistic/memo}">悲観的排他制御</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

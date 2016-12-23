@@ -2,7 +2,6 @@ package gl8080.application.pessimistic;
 
 import gl8080.application.login.LoginUser;
 import gl8080.logic.pessimistic.LockTargetCode;
-import gl8080.logic.pessimistic.MemoDao;
 import gl8080.logic.pessimistic.PessimisticLock;
 import gl8080.logic.pessimistic.PessimisticLockDao;
 import org.slf4j.Logger;
@@ -20,37 +19,40 @@ import java.util.Optional;
 @Service
 public class PessimisticLockService implements HttpSessionListener {
     private static final Logger logger = LoggerFactory.getLogger(PessimisticLockService.class);
-    @Autowired
-    private LoginUser loginUser;
-    @Autowired
-    private MemoDao memoDao;
-    @Autowired
-    private PessimisticLockDao pessimisticLockDao;
     
+    private LoginUser loginUser;
+    private PessimisticLockDao pessimisticLockDao;
+
+    @Autowired
+    public PessimisticLockService(LoginUser loginUser, PessimisticLockDao pessimisticLockDao) {
+        this.loginUser = loginUser;
+        this.pessimisticLockDao = pessimisticLockDao;
+    }
+
     @Transactional
     public Optional<PessimisticLock> tryLock(LockTargetCode targetCode, long targetId) {
         this.pessimisticLockDao.lockTable();
         
-        Optional<PessimisticLock> currentLock = this.pessimisticLockDao.findByTargetCodeAndId(targetCode, targetId);
+        Optional<PessimisticLock> foundLock = this.pessimisticLockDao.findByTargetCodeAndId(targetCode, targetId);
         
-        if (!currentLock.isPresent()) {
+        if (!foundLock.isPresent()) {
             logger.info("lock is not exists.");
             return Optional.of(this.lock(targetCode, targetId));
         }
         
-        PessimisticLock lock = currentLock.get();
+        PessimisticLock currentLock = foundLock.get();
         
-        if (lock.isExpired(LocalDateTime.now())) {
+        if (currentLock.isExpired(LocalDateTime.now())) {
             logger.info("lock is expired.");
-            this.pessimisticLockDao.delete(lock);
+            this.pessimisticLockDao.delete(currentLock);
             return Optional.of(this.lock(targetCode, targetId));
         }
         
-        if (!lock.isCreatedBy(this.loginUser.getLoginId())) {
+        if (!currentLock.isCreatedBy(this.loginUser.getLoginId())) {
             return Optional.empty();
         }
         
-        return Optional.of(lock);
+        return Optional.of(currentLock);
     }
     
     private PessimisticLock lock(LockTargetCode targetCode, long targetId) {
@@ -82,4 +84,5 @@ public class PessimisticLockService implements HttpSessionListener {
     }
 
     @Override public void sessionCreated(HttpSessionEvent se) {}
+
 }
