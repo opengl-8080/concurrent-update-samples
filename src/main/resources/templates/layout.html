@@ -7,6 +7,7 @@
         <title layout:title-pattern="$CONTENT_TITLE - $DECORATOR_TITLE">排他制御サンプル</title>
     </head>
     <body>
+        <a th:if="${@loginUser.isLoggedIn()}" th:href="@{/logout}" class="btn btn-default pull-right">ログアウト</a>
         <div class="container">
             <div class="row text-center">
                 <h1 layout:fragment="subTitle">サブタイトル</h1>
